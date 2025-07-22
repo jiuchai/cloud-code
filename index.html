@@ -1,0 +1,475 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <style>
+        .container{
+            background: linear-gradient(135deg, #ffb6c1 0%, #87cefa 100%);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            flex-direction: column;
+        }
+        .face {
+            width: 200px;
+            height: 200px;
+            background-color: #fff;
+            border-radius: 50%;
+            position: relative;
+            overflow: hidden;
+        }
+        .eyes {
+            position: relative;
+            display: inline-block;
+        }
+        .eye {
+            width: 50px;  /* 增大眼睛尺寸 */
+            height: 50px;
+            background: #fff;
+            border-radius: 50%;
+            display: inline-block;
+            margin: 0 15px;
+            margin-top: 40px;
+            position: relative;
+            overflow: hidden;
+            box-shadow: inset 0 0 8px rgba(0,0,0,0.2);
+        }
+        .pupil {
+            width: 24px;  /* 增大瞳孔尺寸 */
+            height: 24px;
+            background: #222;
+            border-radius: 50%;
+            position: absolute;
+            left: 50%;
+            top: 50%;
+            transform: translate(-50%, -50%);
+        }
+        .lian{
+           background-color: rgb(255, 215, 128);
+           border: 2px solid rgb(238, 199, 114); /* 高光色 */
+           display: flex;
+           align-items: center;
+           height: 200px;
+           width: 200px;
+           border-radius: 50%;
+           flex-direction: column;
+           margin-top: 30px;
+           overflow: hidden;
+           position: relative;
+        }
+        .lulian{
+            position: absolute;
+            height: 0px;
+            width: 200px;
+            background: linear-gradient(
+                to bottom, 
+                rgba(57, 225, 82, 0.908), /* 红色 */
+                rgb(255, 215, 128) /* 蓝色 */
+            );
+            mask: linear-gradient(
+                to bottom, 
+                transparent, /* 左侧完全透明 */
+                rgb(255, 215, 128) 0%,   /* 左侧 20% 开始显示 */
+                rgb(255, 215, 128) 10%,   /* 右侧 80% 开始透明 */
+                transparent  /* 右侧完全透明 */
+            );
+            border-radius: 200px;
+        }
+        .kuang{
+            width: 600px;
+            background-color: #e7e7e7;
+            display: flex;
+            align-items: center;
+            height: 400px;
+            flex-direction: column;
+            border-radius: 10px;
+        }
+        /* 新增嘴巴动画样式 */
+        .zui {
+            width: 100px;
+            height: 100px;  /* 修改高度更接近嘴巴形状 */
+            background-color: #e64242;
+           border: 1px solid #c33a3a; /* 高光色 */
+            position: relative;
+            margin-bottom: 40px;
+            margin-top: 20px;
+            overflow: hidden;
+            border-top-left-radius: 10px;
+            border-top-right-radius: 10px;
+            border-bottom-left-radius: 40px;
+            border-bottom-right-radius: 40px;
+        }
+        
+        /* 添加嘴唇细节 */
+        .zui::after {
+            content: '';
+            position: absolute;
+            width: 80%;
+            height: 40px;
+            background: #a92222;
+            bottom: -10px;
+            left: 5%;
+            border-top-left-radius: 50%;
+            border-top-right-radius: 50%;
+        }
+        .ya{
+            position: absolute;
+            width: 20px;
+            height: 10px;
+            margin-top: 2px;
+            background-color: white;
+            
+            border-bottom-left-radius: 5px;
+            border-bottom-right-radius: 5px;
+            right: 24px;
+        }
+        .anjian{
+            width: 90px;
+            height: 40px;
+            background-color: rgb(68, 205, 93);
+            color: white;
+            border-radius: 10px;
+            border: none;
+            font-weight: bold;
+        }
+        .anjian2{
+            width: 90px;
+            height: 40px;
+            background-color: rgb(205, 68, 68);
+            color: white;
+            border-radius: 10px;
+            border: none;
+            font-weight: bold;
+            position: absolute;
+            transition:left 0.2s ease,top 0.2s ease;
+        }
+        .anjian2:hover {
+            background-color: rgb(220, 91, 91); /* 鼠标悬停时的背景颜色 */
+            }
+        .anjian:hover {
+            background-color: rgb(91, 219, 114); /* 鼠标悬停时的背景颜色 */
+        }
+        .liandan{
+            position: absolute;
+            display: flex;
+            flex-direction: row;
+            width: 170px;
+            margin-top: 85px;
+            justify-content: space-between;
+        }
+        .liandan2{
+            width: 40px;
+            height: 20px;
+            background-color: rgba(255, 221, 200, 0.884); /* 主色 */
+            color: #FF69B4; /* 辅助色 */
+            border: 2px solid rgba(255, 223, 223, 0.925); /* 高光色 */
+            border-radius: 50%;
+        }
+        .liandan3{
+            width: 40px;
+            height: 20px;
+            background-color: rgba(255, 221, 200, 0.884); /* 主色 */
+            color: #FF69B4; /* 辅助色 */
+            border: 2px solid rgba(255, 223, 223, 0.925); /* 高光色 */
+            border-radius: 50%;
+        }
+        .title {
+            color: #fff;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.2);
+            font-size: 3em;
+            margin: 20px 0;
+            animation: bounce 2s infinite;
+        }
+
+        .emoji-container {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+            gap: 30px;
+            padding: 20px;
+            max-width: 800px;
+        }
+
+        .emoji {
+            font-size: 4em;
+            cursor: pointer;
+            transition: all 0.3s;
+            animation: float 4s ease-in-out infinite;
+            text-shadow: 0 0 10px rgba(255,255,255,0.5);
+            position: relative;
+        }
+
+        .emoji:hover {
+            transform: scale(1.2) rotate(15deg);
+            filter: brightness(1.1);
+        }
+
+        /* 不同表情的动画延迟 */
+        .emoji:nth-child(1) { animation-delay: 0.2s; }
+        .emoji:nth-child(2) { animation-delay: 0.5s; }
+        .emoji:nth-child(3) { animation-delay: 0.8s; }
+        .emoji:nth-child(4) { animation-delay: 1.1s; }
+        .emoji:nth-child(5) { animation-delay: 1.4s; }
+
+        @keyframes float {
+            0%, 100% { transform: translateY(0) rotate(0deg); }
+            50% { transform: translateY(-20px) rotate(10deg); }
+        }
+
+        @keyframes bounce {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-10px); }
+        }
+
+        .hearts {
+            position: fixed;
+            pointer-events: none;
+            width: 100%;
+            height: 100%;
+            top: 0;
+            left: 0;
+        }
+
+        .heart {
+            position: absolute;
+            font-size: 1.5em;
+            animation: heartFloat 1.5s ease-out forwards;
+        }
+
+        @keyframes heartFloat {
+            0% {
+                opacity: 1;
+                transform: translateY(0) scale(1);
+            }
+            100% {
+                opacity: 0;
+                transform: translateY(-100px) scale(0.5);
+            }
+        }
+
+        .bubble {
+            position: absolute;
+            background: white;
+            padding: 10px 20px;
+            border-radius: 20px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            animation: bubble 1.5s ease-out;
+            font-size: 1.2em;
+            white-space: nowrap;
+        }
+
+        @keyframes bubble {
+            0% { opacity: 1; transform: translateY(0) scale(1); }
+            100% { opacity: 0; transform: translateY(-50px) scale(0.5); }
+        }
+      
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="emoji-container">
+            <div class="emoji">😊</div>
+            <div class="emoji">🥰</div>
+            <div class="emoji">😻</div>
+            <div class="emoji">🐶</div>
+            <div class="emoji">🌸</div>
+        </div>
+        <!-- 其他原有结构保持不变 -->
+         <div class="kuang">
+            <div style="width: 90%;display: flex;flex-direction: row;margin-top: 8px;">
+                <div style="background-color: rgb(214, 0, 0);width: 14px;height: 14px;border-radius: 50%;margin-right: 5px;"></div>
+                <div style="background-color: rgb(32, 173, 32);width: 14px;height: 14px;border-radius: 50%;margin-right: 5px;"></div>
+                <div style="background-color: rgb(255, 231, 46);width: 14px;height: 14px;border-radius: 50%;margin-right: 5px;"></div>
+            </div>
+            <div style="height: 1px;width: 95%;background-color: #919191;margin-top: 8px;"></div>
+            <div style="margin-top: 20px;color: #5c5c5c;font-weight: 500;font-size: large;">我喜欢你，你可以做我女朋友吗？</div>
+            <div class="lian">
+                <div class="lulian"></div>
+                <div class="liandan">
+                    <div class="liandan2"></div>
+                    <div class="liandan3"></div>
+                </div>
+                <div class="eyes">
+                    <div class="eye">
+                        <div class="pupil" id="leftPupil"></div>
+                    </div>
+                    <div class="eye">
+                        <div class="pupil" id="rightPupil"></div>
+                    </div>
+                </div>
+                <div class="zui">
+                    <div class="ya"></div>
+                </div>
+            </div>
+            <div style="width: 80%;display: flex;flex-direction: row;justify-content: space-between;margin-top: 40px;">
+                <div></div>
+                <button class="anjian2">拒绝</button>
+                <button class="anjian">接受</button>
+            </div>
+         </div>
+        
+       
+    </div>
+
+    <script>
+        function getRandomInteger(minnum,mannum) {
+            const random = Math.round(Math.random() * (mannum - minnum)) + minnum;
+            return random;
+        }
+        const pupils = document.querySelectorAll('.pupil');
+        const eyes = document.querySelectorAll('.eye');
+        const mouth = document.querySelector('.zui');
+        const kuang = document.querySelector('.kuang').getBoundingClientRect();
+        const lulian = document.querySelector('.lulian');
+       
+        const liandan2 = document.querySelector('.liandan2');
+        const liandan3 = document.querySelector('.liandan3');
+
+        const anjian2 = document.querySelector('.anjian2');
+
+        const uninstallBtn = document.getElementById('uninstallBtn');
+        
+        document.addEventListener('mousemove', (e) => {
+            var x = e.clientX
+            var y = e.clientY
+            var mmm = mouth.getBoundingClientRect();
+            const mmmCenter = {
+                x: mmm.left + mmm.width/2,
+                y: mmm.top + mmm.height/2
+            };
+
+            var jujue = anjian2.getBoundingClientRect();
+            const jujueCenter = {
+                x: jujue.left + jujue.width/2,
+                y: jujue.top + jujue.height/2
+            };
+
+            var julijujue = ((x-jujueCenter.x)**2+(y-jujueCenter.y)**2)**0.5
+            
+            if(julijujue<=100){
+                var kuang_x1 = kuang.left
+                var kuang_x2 = kuang.left+kuang.width
+                var kuang_y1 = kuang.top
+                var kuang_y2 = kuang.top+kuang.height
+                var leftlength = Math.abs(jujueCenter.x-kuang_x1)
+                var rightlength = Math.abs(jujueCenter.x-kuang_x2)
+                var topheight = Math.abs(jujueCenter.y-kuang_y1)
+                var bottomheight = Math.abs(jujueCenter.y-kuang_y2)
+                //var xzou = getRandomInteger(kuang_x1+jujue.width,kuang_x2-jujue.width)
+                //var yzou = getRandomInteger(kuang_y1+jujue.height,kuang_y2-jujue.height)
+                //console.log(xzou,yzou)
+          
+                //anjian2.style.left=`${xzou}px`
+                
+                //anjian2.style.top=`${yzou}px`
+                
+            }
+
+
+            
+            var juli = x-mmmCenter.x
+            var bottomradius = null
+            var topradius = 0
+            var can = 10
+            var height = null
+            if(juli<=0){
+                topradius = 20+Math.abs(juli)/can
+                bottomradius = 30-Math.abs(juli)/can
+                height = 10+Math.abs(juli)
+            }
+            if(juli>0){
+                topradius = 20-Math.abs(juli)/can
+                bottomradius = 30+Math.abs(juli)/can
+                height = 10-Math.abs(juli)/can
+            }
+            if(topradius<8){
+                topradius = 8
+            }
+            if(bottomradius<8){
+                bottomradius = 8
+            }
+            if(topradius>30){
+                topradius = 30
+            }
+            if(bottomradius>40){
+                bottomradius = 40
+            }
+            var touming = null
+            if(juli<=0){
+                touming = 0.8-Math.abs(juli)/200
+            }
+            if(juli>0){
+                touming = Math.abs(juli)/800+0.8
+            }
+            mouth.style.borderRadius = `${~~topradius}px ${~~topradius}px ${~~bottomradius}px ${~~bottomradius}px`
+            lulian.style.height = `${height}px`
+            liandan2.style.opacity  = `${touming}`
+            liandan3.style.opacity  = `${touming}`
+            eyes.forEach((eye, index) => {
+                const eyeRect = eye.getBoundingClientRect();
+                const eyeCenter = {
+                    x: eyeRect.left + eyeRect.width/2,
+                    y: eyeRect.top + eyeRect.height/2
+                };
+
+                // 动态计算可移动范围
+                const eyeRadius = eyeRect.width/2;
+                const pupilRadius = pupils[index].offsetWidth/2;
+                const maxMove = eyeRadius - pupilRadius;
+
+                // 计算相对坐标（包含滚动偏移）
+                const deltaX = e.clientX - eyeCenter.x;
+                const deltaY = (e.clientY + window.scrollY) - eyeCenter.y;
+                const angle = Math.atan2(deltaY, deltaX);
+
+                // 限制移动距离
+                const distance = Math.min(
+                    Math.hypot(deltaX, deltaY)/3, 
+                    maxMove
+                );
+                // 计算最终坐标
+                const moveX = Math.cos(angle) * distance;
+                const moveY = Math.sin(angle) * distance-5;
+               
+                pupils[index].style.transform = 
+                    `translate(${moveX}px, ${moveY}px)`;
+                var kuang_x1 = kuang.left
+                var kuang_x2 = kuang.left+kuang.width
+                var kuang_y1 = kuang.top
+                var kuang_y2 = kuang.top+kuang.height
+                if(x<kuang_x1||x>kuang_x2||y<kuang_y1||y>kuang_y2){
+                    pupils[0].style.transform = 
+                    `translate(${0}px, ${-5.656427753335601}px)`;
+                    pupils[1].style.transform = 
+                    `translate(${-20}px, ${-20.656427753335601}px)`;
+                    pupils[0].style.transition = 
+                        "transform 0.5s ease"
+                    pupils[1].style.transition = 
+                        "transform 0.5s ease"
+                    mouth.style.borderRadius = `${10}px ${10}px ${40}px ${40}px`
+                    mouth.style.transition="border-radius 0.5s";
+                    lulian.style.height = '0'
+                    lulian.style.transition= "height 0.1s"; /* 添加高度变化的过渡效果 */
+                    liandan2.style.opacity  = `${1}`
+                    liandan2.style.transition = 
+                        "opacity 0.5s ease"
+                    liandan3.style.opacity  = `${1}`
+                    liandan3.style.transition = 
+                        "opacity 0.5s ease"
+                }else{
+                    pupils[0].style.transition = 
+                        "none"
+                    pupils[1].style.transition = 
+                        "none"
+                    lulian.style.transition= "none"; /* 添加高度变化的过渡效果 */
+                    mouth.style.transition="none";
+                    liandan2.style.transition = 
+                        "none"
+                    liandan3.style.transition = 
+                        "none"
+                }
+            });
+            
+        });
+    </script>
+</body>
+</html>
